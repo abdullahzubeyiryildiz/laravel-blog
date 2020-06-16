@@ -14,8 +14,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', 'PagesController@getIndex');
 
-Route::get('about', 'PagesController@getAbout');
 
-Route::get('contact', 'PagesController@getContact');
+Route::middleware(['web'])->group(function () {
+
+	Route::get('/', 'PagesController@getIndex');
+
+	Route::get('about', 'PagesController@getAbout');
+
+	Route::get('contact', 'PagesController@getContact');
+
+	Route::resource('posts','PostController');
+});

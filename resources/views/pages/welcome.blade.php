@@ -58,7 +58,7 @@
 @endsection
 
 @section('scripts')
-  <script>
+  {{-- <script>
     confirm('test');
-  </script>
+  </script> --}}
 @endsection
