@@ -18,7 +18,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+       // bir değişken oluşturun ve tüm blog yayınlarını veritabanından saklayın
+       // bir görünüm döndürün ve yukarıdaki değişkeni iletin
     }
 
     /**
