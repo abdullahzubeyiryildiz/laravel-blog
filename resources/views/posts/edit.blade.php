@@ -1,12 +1,16 @@
 @extends('main')
 
-@section('title', ' Post Görüntüle')
+@section('title', 'Blog Post Düzenle')
 
 @section('content')
+{!! Form::model($post, ['route' => ['posts.update', $post->id], 'method' => 'PUT']) !!}
 <div class="row">
 	<div class="col-md-8">
-		<h1>{{ $post->title }}</h1>
-		<p class="lead mt-2">{{ $post->body }}</p>
+		{{ Form::label('title', 'Title:')}}
+		{{ Form::text('title', null, ["class" => 'form-control']) }}
+
+		{{ Form::label('body', 'İçerik:', ['class' => 'form-spacing-top'])}}
+		{{ Form::textarea('body', null, ["class" => 'form-control']) }}
 	</div>
 	<div class="col-md-4">
 
@@ -23,14 +27,15 @@
 				<hr>
 				<div class="row">
 					<div class="col-sm-6">
-						{!! Html::linkRoute('posts.edit', 'Düzenle', [$post->id], ['class' =>'btn btn-primary btn-block'] )!!}
+						{!! Html::linkRoute('posts.show', 'İptal', [$post->id], ['class' =>'btn btn-danger btn-block'] )!!}
 					</div>
 					<div class="col-sm-6">
-						{!! Html::linkRoute('posts.destroy', 'Sil', [$post->id], ['class' =>'btn btn-danger btn-block'] )!!}
+						{{ Form::submit('Kaydet', ['class' => 'btn btn-success btn-block'])}}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+{!! Form::close() !!}
 @endsection

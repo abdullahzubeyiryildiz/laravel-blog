@@ -7,13 +7,13 @@
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+        <li class="nav-item {{ is_active('/') }}">
           <a class="nav-link" href="/">Anasayfa <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{ is_active('about') }} ">
           <a class="nav-link" href="/about">Hakkımızda</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{ Request::is('contact') ? "active" : "" }}">
           <a class="nav-link" href="/contact">İletişim</a>
         </li>
       </ul>

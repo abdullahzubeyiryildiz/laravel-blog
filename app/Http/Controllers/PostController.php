@@ -19,7 +19,10 @@ class PostController extends Controller
     public function index()
     {
        // bir değişken oluşturun ve tüm blog yayınlarını veritabanından saklayın
+        $posts = Post::all();
+
        // bir görünüm döndürün ve yukarıdaki değişkeni iletin
+        return view('posts.index')->withPosts($posts);
     }
 
     /**
@@ -47,15 +50,15 @@ class PostController extends Controller
         ));
 
          // 2- veritabanında sakla
-            $post = new Post;
-            $post->title = $request->title;
-            $post->body = $request->body;
-            $post->save();
+        $post = new Post;
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->save();
 
-            Session::flash('success', 'Yeni Post Başarıyla Eklendi.');
+        Session::flash('success', 'Yeni Post Başarıyla Eklendi.');
 
          // 3- başka bir sayfaya yönlendir
-         return redirect()->route('posts.show', $post->id);
+        return redirect()->route('posts.show', $post->id);
     }
 
     /**
@@ -78,7 +81,12 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        // find the post in the database and save as a var
+        $post = Post::find($id);
+
+        //return the view and pass in the var we previously created
+        return view('posts.edit')->withPost($post);
+
     }
 
     /**
@@ -90,8 +98,24 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        //Validate the data
+      $this->validate($request, array(
+        'title' => 'required|max:255',
+        'body' => 'required'
+    ));
+
+
+        //Save the data to the databese
+      $post = Post::find($id);
+      $post->title = $request->input('title');
+      $post->body = $request->input('body');
+      $post->save();
+        // set flash data with success message
+      Session::flash('success', 'Post Başarıyla Güncellendi.');
+
+        //redirect with flash data to posts.show
+      return redirect()->route('posts.show', $post->id);
+  }
 
     /**
      * Remove the specified resource from storage.
