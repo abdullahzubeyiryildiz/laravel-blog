@@ -13,12 +13,16 @@
 		<div class="card text-center bg-light">
 			<div class="card-body">
 				<dl class="dl-horizontal">
-					<dt>Create At:</dt>
-					<dd>{{ date('j M  Y H:i', strtotime($post->created_at)) }}</dd>
+					<label>Url:</label>
+					<p><a href="{{ route('blog.single', $post->slug) }}">{{ route('blog.single', $post->slug) }}</a></p>
 				</dl>
 				<dl class="dl-horizontal">
-					<dt>Last Updated:</dt>
-					<dd>{{ date('j M  Y H:i', strtotime($post->updated_at)) }}</dd>
+					<label>Created At:</label>
+					<p>{{ date('j M  Y H:i', strtotime($post->created_at)) }}</p>
+				</dl>
+				<dl class="dl-horizontal">
+					<label>Last Updated:</label>
+					<p>{{ date('j M  Y H:i', strtotime($post->updated_at)) }}</p>
 				</dl>
 				<hr>
 				<div class="row">
@@ -26,7 +30,14 @@
 						{!! Html::linkRoute('posts.edit', 'Düzenle', [$post->id], ['class' =>'btn btn-primary btn-block'] )!!}
 					</div>
 					<div class="col-sm-6">
-						{!! Html::linkRoute('posts.destroy', 'Sil', [$post->id], ['class' =>'btn btn-danger btn-block'] )!!}
+						{!! Form::open(['route' => ['posts.destroy', $post->id], 'method' => 'DELETE']) !!}
+						{!! Form::submit('Sil', ['class' =>'btn btn-danger btn-block']) !!}
+						{!! Form::close() !!}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						{{ Html::linkRoute('posts.index', '<< Paylaşımlara Geri Dön', [], ['class' => 'btn btn-block btn-h1-spacing btn-light'] ) }}
 					</div>
 				</div>
 			</div>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use App\Post;
 use Session;
 
@@ -19,11 +20,12 @@ class PostController extends Controller
     public function index()
     {
        // bir değişken oluşturun ve tüm blog yayınlarını veritabanından saklayın
-        $posts = Post::all();
+
+       $posts = Post::orderBy('id','desc')->paginate(1, ["*"], "sayfa");
 
        // bir görünüm döndürün ve yukarıdaki değişkeni iletin
-        return view('posts.index')->withPosts($posts);
-    }
+       return view('posts.index')->withPosts($posts);
+   }
 
     /**
      * Show the form for creating a new resource.
@@ -46,13 +48,17 @@ class PostController extends Controller
          // 1- Verileri doğrulayın
         $this->validate($request, array(
             'title' => 'required|max:255',
+            'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
             'body' => 'required'
         ));
 
          // 2- veritabanında sakla
         $post = new Post;
         $post->title = $request->title;
+        $post->slug = $request->slug;
         $post->body = $request->body;
+        // $slug = Str::slug($request->title, '-');
+        // $post->slug = $slug;
         $post->save();
 
         Session::flash('success', 'Yeni Post Başarıyla Eklendi.');
@@ -71,6 +77,7 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         return view('posts.show')->withPost($post);
+
     }
 
     /**
@@ -99,23 +106,34 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         //Validate the data
-      $this->validate($request, array(
-        'title' => 'required|max:255',
-        'body' => 'required'
-    ));
+        $post = Post::find($id);
+        if ($request->input('slug') == $post->slug) {
+            $this->validate($request, array(
+                'title' => 'required|max:255',
+                'body' => 'required'
+            ));
+        }else {
+           $this->validate($request, array(
+            'title' => 'required|max:255',
+            'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+            'body' => 'required'
+        ));
+       }
+
 
 
         //Save the data to the databese
-      $post = Post::find($id);
-      $post->title = $request->input('title');
-      $post->body = $request->input('body');
-      $post->save();
+     
+       $post->title = $request->input('title');
+       $post->slug = $request->input('slug');
+       $post->body = $request->input('body');
+       $post->save();
         // set flash data with success message
-      Session::flash('success', 'Post Başarıyla Güncellendi.');
+       Session::flash('success', 'Post Başarıyla Güncellendi.');
 
         //redirect with flash data to posts.show
-      return redirect()->route('posts.show', $post->id);
-  }
+       return redirect()->route('posts.show', $post->id);
+   }
 
     /**
      * Remove the specified resource from storage.
@@ -125,6 +143,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+        $post->delete();
+        Session::flash('success', 'Blog Post Başarıyla Silindi.');
+        return redirect()->route('posts.index');
     }
 }

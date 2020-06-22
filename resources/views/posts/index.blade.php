@@ -32,7 +32,7 @@
 				<tr>
 					<td>{{$post->id}}</td>
 					<td>{{$post->title}}</td>
-					<td>{{ substr($post->body,0, 50)}} {{ strlen($post->body) > 50 ? "..." : ""}}</td>
+					<td>{{ substr($post->body,0, 300)}} {{ strlen($post->body) > 300 ? "..." : ""}}</td>
 					<td>{{ date('M j Y, H:i', strtotime($post->created_at)) }}</td>
 					<td><a href="{{ route('posts.show', $post->id) }}" class="btn btn-outline-primary btn-sm">view</a> <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-outline-warning  btn-sm">Edit</a></td>
 				</tr>
@@ -40,6 +40,10 @@
 
 			</tbody>
 		</table>
+
+		<div class="text-center">
+			{!! $posts->links(); !!}
+		</div>
 	</div>
 </div>
 @endsection

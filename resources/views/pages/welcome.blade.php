@@ -3,7 +3,7 @@
 @section('title', 'Anasayfa')
 
 @section('styles')
-  <link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" type="text/css" href="styles.css">
 @endsection
 
 @section('content')
@@ -18,42 +18,24 @@
     </div>
   </div>
 </div>
+
 <div class="row">
   <div class="col-md-8">
-   <div class="post">
-    <h3>Post Tittle</h3>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id consequuntur dolore ex excepturi rem omnis voluptatibus praesentium, maxime officia unde! Repudiandae non quam beatae eaque omnis unde mollitia minus maiores.</p>
-    <a href="#" class="btn btn-primary">Devamını Oku</a>
+    @foreach ($posts as $post)
+    <div class="post">
+      <h3>{{$post->title}}</h3>
+      <p>{{ substr($post->body, 0,300) }} {{ strlen($post->body) > 300 ? "..." : "" }}</p>
+      <a href="{{ url('blog/'.$post->slug) }}" class="btn btn-primary">Devamını Oku</a>
+    </div>
+    @endforeach
+
+
+    <hr>
+
   </div>
-
-  <hr>
-
-  <div class="post">
-    <h3>Post Tittle</h3>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id consequuntur dolore ex excepturi rem omnis voluptatibus praesentium, maxime officia unde! Repudiandae non quam beatae eaque omnis unde mollitia minus maiores.</p>
-    <a href="#" class="btn btn-primary">Devamını Oku</a>
-  </div>
-
-  <hr>
-
-
-  <div class="post">
-    <h3>Post Tittle</h3>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id consequuntur dolore ex excepturi rem omnis voluptatibus praesentium, maxime officia unde! Repudiandae non quam beatae eaque omnis unde mollitia minus maiores.</p>
-    <a href="#" class="btn btn-primary">Devamını Oku</a>
-  </div>
-
-  <hr>
-
-  <div class="post">
-    <h3>Post Tittle</h3>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id consequuntur dolore ex excepturi rem omnis voluptatibus praesentium, maxime officia unde! Repudiandae non quam beatae eaque omnis unde mollitia minus maiores.</p>
-    <a href="#" class="btn btn-primary">Devamını Oku</a>
-  </div>
-</div>
-<div class="col-md-3 col-md-offset-1">
- <h2>Sidebar</h2>
-</div>
+  <div class="col-md-3 col-md-offset-1">
+   <h2>Sidebar</h2>
+ </div>
 </div>
 @endsection
 
@@ -61,4 +43,4 @@
   {{-- <script>
     confirm('test');
   </script> --}}
-@endsection
+  @endsection

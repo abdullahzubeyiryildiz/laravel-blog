@@ -11,6 +11,11 @@
 		{!! Form::open(['route' => 'posts.store', 'data-parsley-validate' => '']) !!}
 		{{ Form::label('title', "Tittle:")}}
 		{{ Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'Başlık' , 'required' => '', 'maxlength' => '255'])}}
+		
+		{{ Form::label('slug', 'Slug:')}}
+		{{ Form::text('slug', null, ['class' =>  'form-control', 'required' => '', 'minlength' => '5', 'maxlength'=> '255' ])}}
+
+
 		{{ Form::label('body', "Post İçerik:")}}
 		{{ Form::textarea('body', null, ['class' => 'form-control','placeholder' => 'İçerik' , 'required' => ''])}}
 		{{ Form::submit('İçerik Ekle', ['class' => 'btn btn-success btn-lg btn-block', 'style' => 'margin-top: 20px;'])}}

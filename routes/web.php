@@ -18,11 +18,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web'])->group(function () {
 
+
+
+
+
+
+	Route::get('blog/{slug}', ['as' => 'blog.single', 'uses' => 'BlogController@getSingle'])->where('slug','[\w\d\-\_]+');
+
+	Route::get('blog', ['uses' => 'BlogController@getIndex', 'as' => 'blog.index']);
+
 	Route::get('/', 'PagesController@getIndex');
-
 	Route::get('about', 'PagesController@getAbout');
-
 	Route::get('contact', 'PagesController@getContact');
 
 	Route::resource('posts','PostController');
 });
+
+
+
+	Auth::routes();
+
+	Route::get('/home', 'HomeController@index')->name('home');
+
+
+	Route::get('logout', 'HomeController@logout')->name('logout');
