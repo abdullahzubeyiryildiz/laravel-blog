@@ -32,13 +32,20 @@ Route::middleware(['web'])->group(function () {
 	Route::get('contact', 'PagesController@getContact');
 
 	Route::resource('posts','PostController');
-});
 
+	Route::resource('categories','CategoryController', ['only' => ['create','index','store'] ]);
 
 
 	Auth::routes();
+	
 
 	Route::get('/home', 'HomeController@index')->name('home');
 
 
 	Route::get('logout', 'HomeController@logout')->name('logout');
+
+
+});
+
+
+

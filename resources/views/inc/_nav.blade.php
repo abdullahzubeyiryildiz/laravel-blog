@@ -42,18 +42,19 @@
         </a>
 
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-             <a class="dropdown-item" href="#">Paylaşımlar</a>
-          <a class="dropdown-item" href="{{ route('logout') }}">
-            {{ __('Logout') }}
-          </a>
+         <a class="dropdown-item" href="{{route('posts.index')}}">Paylaşımlar</a>
+         <a class="dropdown-item" href="{{route('categories.index')}}">Kategoriler</a>
+         <a class="dropdown-item" href="{{ route('logout') }}">
+          {{ __('Logout') }}
+        </a>
 
-          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-          </form>
-        </div>
-      </li>
-      @endguest
-    </ul>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+          @csrf
+        </form>
+      </div>
+    </li>
+    @endguest
+  </ul>
 
-  </div>
+</div>
 </nav>
