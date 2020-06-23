@@ -7,6 +7,7 @@
 	<div class="col-md-8">
 		<h1>{{ $post->title }}</h1>
 		<p class="lead mt-2">{{ $post->body }}</p>
+
 	</div>
 	<div class="col-md-4">
 
@@ -15,6 +16,11 @@
 				<dl class="dl-horizontal">
 					<label>Url:</label>
 					<p><a href="{{ route('blog.single', $post->slug) }}">{{ route('blog.single', $post->slug) }}</a></p>
+				</dl>
+		
+				<dl class="dl-horizontal">
+					<label>Kategori</label>
+					<p>{{ $post->category->name }}</p>
 				</dl>
 				<dl class="dl-horizontal">
 					<label>Created At:</label>

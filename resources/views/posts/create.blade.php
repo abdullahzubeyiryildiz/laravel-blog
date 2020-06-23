@@ -16,6 +16,16 @@
 		{{ Form::text('slug', null, ['class' =>  'form-control', 'required' => '', 'minlength' => '5', 'maxlength'=> '255' ])}}
 
 
+		{{Form::label('category' , 'Kategori:')}}
+
+
+		<select class="form-control" name="category_id">
+			@foreach ($categories as $category)
+				<option value="{{$category->id}}">{{$category->name}}</option>
+			@endforeach
+		</select>
+
+	
 		{{ Form::label('body', "Post İçerik:")}}
 		{{ Form::textarea('body', null, ['class' => 'form-control','placeholder' => 'İçerik' , 'required' => ''])}}
 		{{ Form::submit('İçerik Ekle', ['class' => 'btn btn-success btn-lg btn-block', 'style' => 'margin-top: 20px;'])}}

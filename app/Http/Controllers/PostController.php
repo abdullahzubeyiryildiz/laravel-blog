@@ -8,14 +8,15 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use App\Post;
+use App\Category;
 use Session;
 
 class PostController extends Controller
 {
-      public function __construct()
-    {
-        $this->middleware('auth');
-    }
+  public function __construct()
+  {
+    $this->middleware('auth');
+}
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +39,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::all();
+        return view('posts.create')->withCategories($categories);
     }
 
     /**
@@ -53,6 +55,7 @@ class PostController extends Controller
         $this->validate($request, array(
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+            'category_id' => 'required|integer',
             'body' => 'required'
         ));
 
@@ -60,6 +63,7 @@ class PostController extends Controller
         $post = new Post;
         $post->title = $request->title;
         $post->slug = $request->slug;
+        $post->category_id = $request->category_id;
         $post->body = $request->body;
         // $slug = Str::slug($request->title, '-');
         // $post->slug = $slug;
@@ -94,9 +98,14 @@ class PostController extends Controller
     {
         // find the post in the database and save as a var
         $post = Post::find($id);
+        $categories = Category::all();
+        $cats = [];
+        foreach ($categories as $category) {
+          $cats[$category->id] = $category->name;
+        }
 
         //return the view and pass in the var we previously created
-        return view('posts.edit')->withPost($post);
+        return view('posts.edit')->withPost($post)->withCategories($cats);
 
     }
 
@@ -114,12 +123,14 @@ class PostController extends Controller
         if ($request->input('slug') == $post->slug) {
             $this->validate($request, array(
                 'title' => 'required|max:255',
+                'category_id' => 'required|integer',
                 'body' => 'required'
             ));
         }else {
            $this->validate($request, array(
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+            'category_id' => 'required|integer',
             'body' => 'required'
         ));
        }
@@ -127,9 +138,10 @@ class PostController extends Controller
 
 
         //Save the data to the databese
-     
+
        $post->title = $request->input('title');
        $post->slug = $request->input('slug');
+       $post->category_id = $request->input('category_id');
        $post->body = $request->input('body');
        $post->save();
         // set flash data with success message
