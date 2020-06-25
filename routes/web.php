@@ -35,6 +35,7 @@ Route::middleware(['web'])->group(function () {
 
 	Route::resource('categories','CategoryController', ['only' => ['create','index','store'] ]);
 
+	Route::resource('tags','TagController', ['except' => ['create'] ]);
 
 	Auth::routes();
 	

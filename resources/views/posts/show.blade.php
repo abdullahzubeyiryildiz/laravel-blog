@@ -8,6 +8,15 @@
 		<h1>{{ $post->title }}</h1>
 		<p class="lead mt-2">{{ $post->body }}</p>
 
+		<hr>
+
+		<div class="tags">
+
+			@foreach ($post->tags as $tag)
+			<span class="badge badge-secondary">{{ $tag->name }}</span>
+			@endforeach
+
+		</div>
 	</div>
 	<div class="col-md-4">
 
@@ -17,7 +26,7 @@
 					<label>Url:</label>
 					<p><a href="{{ route('blog.single', $post->slug) }}">{{ route('blog.single', $post->slug) }}</a></p>
 				</dl>
-		
+
 				<dl class="dl-horizontal">
 					<label>Kategori</label>
 					<p>{{ $post->category->name }}</p>
