@@ -1,21 +1,52 @@
 @extends('main')
 
 @section('title', ' Post Görüntüle')
+@section('styles')
+
+{!! Html::style('css/all.min.css') !!}
+@endsection
 
 @section('content')
 <div class="row">
 	<div class="col-md-8">
+		<img src="{{ asset('images/'.$post->image) }}" alt="">
 		<h1>{{ $post->title }}</h1>
-		<p class="lead mt-2">{{ $post->body }}</p>
+		<p class="lead mt-2">{!! $post->body !!}</p>
 
 		<hr>
 
 		<div class="tags">
-
 			@foreach ($post->tags as $tag)
 			<span class="badge badge-secondary">{{ $tag->name }}</span>
 			@endforeach
+		</div>
 
+		<div id="backend-comments" style="margin-top: 50px;">
+			<h3>Yorumlar <small>{{ $post->comments()->count() }} Toplam </small></h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Yorum</th>
+						<th ></th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($post->comments as $comment)
+					<tr>
+						<td>{{$comment->name}}</td>
+						<td>{{$comment->email}}</td>
+						<td>{{$comment->comment}}</td>
+						<td style="width: 100px;">
+							<a href="{{ route('comments.edit', $comment->id)}}" class="btn btn-sm btn-primary"> <i class="fas fa-edit"></i> </a>
+							<a href="{{ route('comments.delete', $comment->id)}}" class="btn btn-sm btn-danger"> <i class="fas fa-trash-alt"></i> </a>
+						</td>
+					</tr>
+					@endforeach
+
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="col-md-4">
@@ -59,4 +90,10 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+
+@section('scripts')
+{!! Html::script('js/all.min.js') !!}
+
 @endsection

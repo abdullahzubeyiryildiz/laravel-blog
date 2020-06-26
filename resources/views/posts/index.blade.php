@@ -32,7 +32,7 @@
 				<tr>
 					<td>{{$post->id}}</td>
 					<td>{{$post->title}}</td>
-					<td>{{ substr($post->body,0, 300)}} {{ strlen($post->body) > 300 ? "..." : ""}}</td>
+					<td>{{ substr(strip_tags($post->body),0, 300)}} {{ strlen(strip_tags($post->body)) > 300 ? "..." : ""}}</td>
 					<td>{{ date('M j Y, H:i', strtotime($post->created_at)) }}</td>
 					<td><a href="{{ route('posts.show', $post->id) }}" class="btn btn-outline-primary btn-sm">view</a> <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-outline-warning  btn-sm">Edit</a></td>
 				</tr>

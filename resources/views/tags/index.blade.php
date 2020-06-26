@@ -19,7 +19,7 @@
 
 				<tr>
 					<td>{{ $tag->id }}</td>
-					<td>{{ $tag->name }}</td>
+					<td> <a href="{{ route('tags.show', $tag->id) }}" class="btn btn-light btn-sm">{{ $tag->name }}</a></td>
 				</tr>
 				@endforeach
 			</tbody>

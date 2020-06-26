@@ -6,10 +6,29 @@
 {!! Html::style('css/parsley.css') !!}
 
 {!! Html::style('css/select2.min.css') !!}
+<script src='https://cdn.tiny.cloud/1/hu7ktd455vbvj5n8sfy7sjs9tzj7amz9n4443xh4usv947q3/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+<script>
+	tinymce.init({
+		selector: 'textarea',
+		language: 'tr',
+		entity_encoding : "raw",
+		
+		plugins: [
+		'advlist autolink lists link image charmap print preview anchor link',
+		'searchreplace visualblocks code fullscreen',
+		'insertdatetime media table paste code help wordcount'
+		],
+		toolbar: 'undo redo | formatselect |  ' +
+		'bold italic backcolor | alignleft aligncenter | link |' +
+		'alignright alignjustify | bullist numlist outdent indent |' +
+		'removeformat | help'
+
+	});
+</script>
 @endsection
 
 @section('content')
-{!! Form::model($post, ['route' => ['posts.update', $post->id], 'method' => 'PUT']) !!}
+{!! Form::model($post, ['route' => ['posts.update', $post->id], 'method' => 'PUT', 'files' => true ]) !!}
 <div class="row">
 	<div class="col-md-8">
 		{{ Form::label('title', 'Title:')}}
@@ -18,14 +37,21 @@
 		{{ Form::label('slug', 'Slug:', ['class' => 'form-spacing-top'])}}
 		{{ Form::text('slug', null, ['class' =>  'form-control' ])}}
 		
-			{{Form::label('category' , 'Kategori:', ['class' => 'form-spacing-top'])}}
-			{{Form::select('category_id', $categories, null, ['class' => 'form-control'] )}}
-	
+		{{Form::label('category' , 'Kategori:', ['class' => 'form-spacing-top'])}}
+		{{Form::select('category_id', $categories, null, ['class' => 'form-control'] )}}
+		
+		{{Form::label('featured_image' , 'İmage:', ['class' => 'form-spacing-top'])}}
+		{{Html::image('images/'.$post->image )}}  <br><br>
+		{{Form::file('featured_image')}}
+		<br>
+
+
+
 
 		{{Form::label('tags' , 'Etiket:', ['class' => 'form-spacing-top'])}}
-			{{Form::select('tags[]', $tags, null, ['class' => 'form-control multiselect', 'multiple' => 'multiple'] )}}
+		{{Form::select('tags[]', $tags, null, ['class' => 'form-control multiselect', 'multiple' => 'multiple'] )}}
 
-			
+		
 
 		{{ Form::label('body', 'İçerik:', ['class' => 'form-spacing-top'])}}
 		{{ Form::textarea('body', null, ["class" => 'form-control']) }}
@@ -65,6 +91,6 @@
 {!! Html::script('js/tr.js') !!}
 <script>
 	// $(".multiselect").select2();
-		$(".multiselect").select2().val({!! json_encode($post->tags()->allRelatedIds()) !!}).trigger('change');
+	$(".multiselect").select2().val({!! json_encode($post->tags()->allRelatedIds()) !!}).trigger('change');
 </script>
 @endsection

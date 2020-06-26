@@ -11,6 +11,11 @@ use App\Post;
 use App\Category;
 use App\Tag;
 use Session;
+use Purifier;
+use Image;
+
+use Storage;
+
 
 class PostController extends Controller
 {
@@ -26,11 +31,11 @@ class PostController extends Controller
     {
        // bir değişken oluşturun ve tüm blog yayınlarını veritabanından saklayın
 
-     $posts = Post::orderBy('id','desc')->paginate(10, ["*"], "sayfa");
+       $posts = Post::orderBy('id','desc')->paginate(10, ["*"], "sayfa");
 
        // bir görünüm döndürün ve yukarıdaki değişkeni iletin
-     return view('posts.index')->withPosts($posts);
- }
+       return view('posts.index')->withPosts($posts);
+   }
 
     /**
      * Show the form for creating a new resource.
@@ -58,6 +63,7 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
             'category_id' => 'required|integer',
+            'featured_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             'body' => 'required'
         ));
 
@@ -66,18 +72,33 @@ class PostController extends Controller
         $post->title = $request->title;
         $post->slug = $request->slug;
         $post->category_id = $request->category_id;
-        $post->body = $request->body;
+        $post->body = Purifier::clean($request->body);
         // $slug = Str::slug($request->title, '-');
         // $post->slug = $slug;
-        $post->save();
 
-        $post->tags()->sync($request->tags,false);
+        //Save our İmage
+        if ($request->hasFile('featured_image')) {
 
-        Session::flash('success', 'Yeni Post Başarıyla Eklendi.');
+         $image = $request->file('featured_image');     
+         $filename = time().'.'. $image->extension();  
+         $location = public_path('images/'.$filename);
+
+
+
+         Image::make($image)->resize(800,400)->save($location);
+
+         $post->image = $filename;
+     }
+
+     $post->save();
+
+     $post->tags()->sync($request->tags,false);
+
+     Session::flash('success', 'Yeni Post Başarıyla Eklendi.');
 
          // 3- başka bir sayfaya yönlendir
-        return redirect()->route('posts.show', $post->id);
-    }
+     return redirect()->route('posts.show', $post->id);
+ }
 
     /**
      * Display the specified resource.
@@ -111,15 +132,15 @@ class PostController extends Controller
       $tags = Tag::all();
       $tags2 = [];
       foreach ($tags as $tag) {
-         $tags2[$tag->id] = $tag->name;
-     }
+       $tags2[$tag->id] = $tag->name;
+   }
 
 
 
         //return the view and pass in the var we previously created
-     return view('posts.edit')->withPost($post)->withCategories($cats)->withTags($tags2);
+   return view('posts.edit')->withPost($post)->withCategories($cats)->withTags($tags2);
 
- }
+}
 
     /**
      * Update the specified resource in storage.
@@ -132,43 +153,52 @@ class PostController extends Controller
     {
         //Validate the data
         $post = Post::find($id);
-        if ($request->input('slug') == $post->slug) {
-            $this->validate($request, array(
-                'title' => 'required|max:255',
-                'category_id' => 'required|integer',
-                'body' => 'required'
-            ));
-        }else {
-         $this->validate($request, array(
+      
+           $this->validate($request, array(
             'title' => 'required|max:255',
-            'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+            'slug' => "required|alpha_dash|min:5|max:255|unique:posts,slug,$id",
             'category_id' => 'required|integer',
             'body' => 'required'
         ));
-     }
+       
+
+  //Save our İmage
+       if ($request->featured_image) {
+
+           //add the new photo
+            $image = $request->file('featured_image');     
+            $filename = time().'.'. $image->extension();  
+            $location = public_path('images/'.$filename);
 
 
+            Image::make($image)->resize(800,400)->save($location);
+            $oldFilename = $post->image;
+           //update the database
+            $post->image = $filename;     
+           //Delete the old photo
+            Storage::delete($oldFilename);
+    }
 
         //Save the data to the databese
 
-     $post->title = $request->input('title');
-     $post->slug = $request->input('slug');
-     $post->category_id = $request->input('category_id');
-     $post->body = $request->input('body');
-     $post->save();
+    $post->title = $request->input('title');
+    $post->slug = $request->input('slug');
+    $post->category_id = $request->input('category_id');
+    $post->body = Purifier::clean($request->input('body'));
+    $post->save();
 
-     if (isset($request->tags)) {
+    if (isset($request->tags)) {
       $post->tags()->sync($request->tags);
-      }else {
-        $post->tags()->sync(array());
-    }
+  }else {
+    $post->tags()->sync(array());
+}
 
 
         // set flash data with success message
-        Session::flash('success', 'Post Başarıyla Güncellendi.');
+Session::flash('success', 'Post Başarıyla Güncellendi.');
 
         //redirect with flash data to posts.show
-        return redirect()->route('posts.show', $post->id);
+return redirect()->route('posts.show', $post->id);
 }
 
     /**
@@ -180,6 +210,8 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
+        $post->tags()->detach();
+        Storage::delete($post->image);
         $post->delete();
         Session::flash('success', 'Blog Post Başarıyla Silindi.');
         return redirect()->route('posts.index');
